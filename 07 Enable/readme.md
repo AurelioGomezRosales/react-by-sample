@@ -1,13 +1,12 @@
 # 07 Enable
 
-Let's continue with the update name sample, this time we want to disable the
-"update" button when the input is empty or when the value hasn't changed.
+Let's continue with the update name example, this time we want to disable the "Change" button when the input is empty or when the value hasn't changed.
 
-We will take a startup point sample _[06 MoveBackToStateless/](./../06%20MoveBackToStateless/)_.
+We take _[06 MoveBackToStateless/](./../06%20MoveBackToStateless/)_ as reference.
 
 Summary steps:
 
-- Add a condition to disable
+- Add a condition to disable the button.
 
 ## Prerequisites
 
@@ -19,7 +18,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (v6.6.0 or newer) if they are 
 
 - Copy the content from _[06 MoveBackToStateless/](./../06%20MoveBackToStateless/)_.
 
-- Let's start by adding a condition to disable the field whenever is empty. Replace only the input tag in _[./src/nameEdit.tsx](./src/nameEdit.tsx)_ with the following code:
+- Let's start by adding a condition to disable the button whenever the input field is empty. Replace only the input tag in _[./src/nameEdit.tsx](./src/nameEdit.tsx)_ with the following code:
 
 _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
 ```diff
@@ -32,13 +31,12 @@ _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
 +        <button 
 +          className="btn btn-default" 
 +          onClick={props.onNameUpdateRequest}
-+          disabled={props.editingUserName === ''}
++          disabled={!props.editingUserName}
 +        >Change</button>
     </div>
 ```
 
-- Now comes the tricky part, detect when the name hasn't changed.<br />
-First we will add a new property called _userName_ with type `string` in _[./src/nameEdit.tsx](./src/nameEdit.tsx)_. This one will hold the last accepted userName.
+- Now comes the tricky part: to detect when ```userName``` has changed. First we add a new property called ```userName``` with type `string` in _[./src/nameEdit.tsx](./src/nameEdit.tsx)_. This one holds the last accepted value for ```userName```.
 
 _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
 ```diff
@@ -50,7 +48,7 @@ _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
  }
  ```
 
-- We will add to the enable condition one more test, checking if name has changed.
+- We add to disabled an additional condition an to check if the value of ```editingUserName``` name has changed.
 Replace again only the input tag in _[./src/nameEdit.tsx](./src/nameEdit.tsx)_ with the following code:
 
 _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
@@ -59,11 +57,11 @@ _[./src/nameEdit.tsx](./src/nameEdit.tsx)_
       className="btn btn-default" 
       onClick={props.onNameUpdateRequest}
 -      disabled={props.editingUserName === ''}
-+      disabled={props.editingUserName === '' || props.userName === props.editingUserName}
++      disabled={!props.editingUserName || props.userName === props.editingUserName}
       >Change</button>
 ```
 
-- Now we have to feed this property from the parent control (Add `userName={this.state.userName}` to the NameEditComponent in _[./src/app.tsx](./src/app.tsx)_). The `NameEditComponent` should be like:
+- Now we have to feed this property from the parent control. Add `userName={this.state.userName}` to the NameEditComponent in _[./src/app.tsx](./src/app.tsx)_. The `NameEditComponent` should be like:
 
 _[./src/app.tsx](./src/app.tsx)_
 ```diff
@@ -87,9 +85,9 @@ _[./src/app.tsx](./src/app.tsx)_
 npm start
 ```
 
-> As an excercise, what if we want to do this more generic? we could have a generic property called enable that could be true or false.
+> As an excercise, how can we get this in a more generic way? We could have a generic property called disable that could be true or false.
 
-To do this, we will modify [./src/app.tsx](./src/app.tsx) adding the variable `disable` to the `<NameEditComponent>` component. This variable is **Boolean**, so you need conditions to evaluate it.
+To do this, we modify [./src/app.tsx](./src/app.tsx) adding the variable `disable` to the `<NameEditComponent>` component. This variable is **Boolean**, so you need conditions to evaluate it.
 
 _[./src/app.tsx](./src/app.tsx)_
 ```diff
@@ -129,7 +127,7 @@ export const NameEditComponent = (props : Props) =>
       <button 
           className="btn btn-default" 
           onClick={props.onNameUpdateRequest}
---        disabled={props.editingUserName === '' || props.userName === props.editingUserName}
+--        disabled={!props.editingUserName || props.userName === props.editingUserName}
 ++        disabled={props.disable}
         >Change</button>
   </div>
