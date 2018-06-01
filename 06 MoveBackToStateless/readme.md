@@ -2,13 +2,13 @@
 
 In example 05 we learned how to remove state from a child control just to have clear governance of state.
 
-It's time to make some cleanup, let's simplify _[nameEdit.tsx](./src/nameEdit.tsx)_ component and move it as a stateless component.
+It's time to make some cleanup, let's simplify _[nameEdit.tsx](./src/nameEdit.tsx)_ component and modify it to a stateless component.
 
-We will take a startup point sample _[05 Refactor](./../05%20Refactor)_.
+We take _[05 Refactor](./../05%20Refactor)_ as reference.
 
 Summary steps:
 
-- Update _[nameEdit.tsx](./src/nameEdit.tsx)_, port it to stateless component and add the methods inline.
+- Update _[nameEdit.tsx](./src/nameEdit.tsx)_ and modify it to a stateless component.
 
 ## Prerequisites
 
@@ -20,7 +20,7 @@ Install [Node.js and npm](https://nodejs.org/en/) (v6.6.0 or newer) if they are 
 
 - Copy the content from _[05 Refactor](./../05%20Refactor)_ and execute `npm install`.
 
-- Update _[nameEdit.tsx](./src/nameEdit.tsx)_, port it to stateless component and add the methods inline. It should look like:
+- Update _[nameEdit.tsx](./src/nameEdit.tsx)_ and modify it to stateless component. It should look like this:
 
  ```jsx
 import * as React from 'react';
@@ -44,7 +44,23 @@ export const NameEditComponent = (props : Props) =>
   </div>
  ```
 
-- Now we can run the sample and we will get same results
+Side note: during the refactory we have changed ```this.props``` to ```props```. This is a required step as ```NameEditComponent``` is no longer a class but a function. During runtime, ```this``` is now undefined, so obviously then ```this.props``` fails.
+
+Side note 2: applying currying and Fragments, the code for ```NameEditComponent``` looks like this:
+
+```
+const onChange = (props: Props) => (event) => {
+  props.onEditingNameUpdated(event.target.value)
+}
+
+export const NameEditComponent = (props : Props) =>
+  <>
+      <label>Update Name:</label>
+      <input value={props.editingUserName} onChange={onChange(props)} />
+      <button className="btn btn-default" onClick={props.onNameUpdateRequest}>Change</button>
+  </>
+ ```
+- Now we can run the example and we get the same results
 
 ```bash
 npm start
